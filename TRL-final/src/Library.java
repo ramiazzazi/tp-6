@@ -25,13 +25,9 @@ public class Library
 		int num;
 		Boolean validISBN = false;
 		
-		while(!validISBN)
+		while(!validISBN)	
 		{
-			for(int i = 0; i < ISBNLength; i++)
-			{
-				num = rand.nextInt(10);
-				isbn += Integer.toString(num);
-			}
+			isbn = createNewISBN(isbn);
 			
 			validISBN = IsValidISBN(isbn);
 		}
@@ -41,6 +37,16 @@ public class Library
 		copiesList.add(newCopy);
 		
 		return newCopy;
+	}
+
+	private String createNewISBN(String isbn) {
+		int num;
+		for(int i = 0; i < ISBNLength; i++)
+		{
+			num = rand.nextInt(10);
+			isbn += Integer.toString(num);
+		}
+		return isbn;
 	}
 	
 	public void AddCopy(Copy copy)
