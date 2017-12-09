@@ -116,6 +116,4 @@ public class TRL_App
 		if(scanner.nextLine().equals("y"))
 			logger.printLog();
 	}
-	
-	
 }

@@ -130,6 +130,11 @@ public class Library
 		AddBookToLibrary("Who even reads books anymore", "Bitter programmer");
 		AddBookToLibrary("Books are outdated", "Dr. McTechie");
 		AddBookToLibrary("All knowledge in the world", "God?");
+		AddBookToLibrary("The shortest book in the world", "Steve");
+		AddBookToLibrary("Book #391", "Stephen King");
+		AddBookToLibrary("Please by this book, I need money", "McBeggar");
+		AddBookToLibrary("Theoretical physics for kids", "Smarty Marty");
+		AddBookToLibrary("The last book in the library", "Librarian");
 	}
 	
 	public void AddBookToLibrary(String title, String author)
