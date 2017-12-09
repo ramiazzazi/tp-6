@@ -23,4 +23,6 @@ Features:
 
 Changes from previous versions and refactoring(s):
 
-//1111111
+=======
+//111111111111121
+>>>>>>> branch 'master' of https://github.com/ramiazzazi/tp-6.git
