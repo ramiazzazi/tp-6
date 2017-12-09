@@ -38,7 +38,7 @@ public class Library
 		
 		return newCopy;
 	}
-
+//refactor #1
 	private String createNewISBN(String isbn) {
 		int num;
 		for(int i = 0; i < ISBNLength; i++)
