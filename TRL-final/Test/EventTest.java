@@ -1,5 +1,8 @@
 import static org.junit.Assert.*;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,7 +22,8 @@ public class EventTest {
 	{
 		Event e = new Event();
 		e.newLog();
-		assertTrue("new log is empty", e.getLogSize() == 0);
+		Integer size = e.getLogSize();
+		assertTrue("new log is empty", size.equals(0));
 	}
 
 	@Test
@@ -27,14 +31,16 @@ public class EventTest {
 	{
 		Event e = new Event();
 		e.logEvent("test");
-		assertTrue("log event added", e.getLogSize() == 1);
+		Integer size = e.getLogSize();
+		assertTrue("log event added", size.equals(1));
 	}
 	
 	@Test
 	public void new_log()
 	{
 		Event e = new Event();
-		assertTrue("log object starts empty", e.getLogSize() == 0);
+		Integer size = e.getLogSize();
+		assertTrue("log object starts empty", size.equals(0));
 	}
 	
 	@Test
@@ -42,12 +48,21 @@ public class EventTest {
 	{
 		Event e = new Event();
 		e.newLog("this is a test string");
-		assertFalse("log object starts empty", e.getLogSize() == 0);
+		Integer size = e.getLogSize();
+		assertFalse("log object starts empty", size.equals(0));
 	}
 	
-	public void print_log() {
-		
+	@Test
+	public void print_log()
+	{
+		String testString = "this is a test string";
+		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+		System.setOut(new PrintStream(outContent));
+		Event e = new Event();
+		e.newLog(testString);
+		e.printLog();
+		String outString = outContent.toString().substring(0, 21);
+		assertTrue("log printed correctly", outString.equals(testString));
 	}
-	
 	
 }

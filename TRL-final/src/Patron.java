@@ -77,6 +77,22 @@ public class Patron
 		return copiesOut.size();
 	}
 	
+	public Copy getCheckedOutBook(String isbn)
+	{
+		for(int i = 0; i < copiesOut.size(); i++)
+		{
+			if(copiesOut.get(i).getISBN().equals(isbn))
+				return copiesOut.get(i);
+		}
+		
+		return null;
+	}
+	
+	public Copy getCheckedOutBook(int index)
+	{
+		return copiesOut.get(index);
+	}
+	
 	public boolean isBookCheckedOut(Copy book)
 	{
 		for(int i = 0; i < copiesOut.size(); i++)

@@ -27,8 +27,8 @@ public class PatronTest {
 	public void nothing_checked_out_initially()
 	{
 		Patron d = new Patron("name");
-		
-		assertTrue("nothing checked out initially", d.getCheckedOutCount() == 0);
+		Integer count = d.getCheckedOutCount();
+		assertTrue("nothing checked out initially", count.equals(0));
 	}
 	
 	@org.junit.Test
@@ -37,8 +37,8 @@ public class PatronTest {
 		Patron d = new Patron("name");
 		Copy c = new Copy("a", "b", "c");
 		d.CheckoutBook(c);
-		
-		assertTrue("checkout success", d.getCheckedOutCount() > 0);
+		Integer count = d.getCheckedOutCount();
+		assertTrue("checkout success", count.equals(1));
 	}
 	
 	@org.junit.Test
@@ -60,14 +60,86 @@ public class PatronTest {
 	}
 	
 	@org.junit.Test
+	public void patron_has_no_holds()
+	{
+		Patron d = new Patron("name");
+		Copy c = new Copy("a", "b", "c");
+		c.Checkout(LocalDateTime.now());
+		d.CheckoutBook(c);
+		assertFalse("patron has no hold", d.hasHolds(LocalDateTime.now()));
+	}
+	
+	@org.junit.Test
 	public void check_in_success()
 	{
 		Patron d = new Patron("name");
 		Copy c = new Copy("a", "b", "c");
 		d.CheckoutBook(c);
 		d.CheckinBook(c);
-		assertTrue("checkin success", d.getCheckedOutCount() == 0);
+		Integer count = d.getCheckedOutCount();
+		assertTrue("checkin success", count.equals(0));
 
 	}
 	
+	@org.junit.Test
+	public void patron_has_record()
+	{
+		Patron d = new Patron("name");
+		Copy c = new Copy("a", "b", "c");
+		c.Checkout(LocalDateTime.now());
+		d.CheckoutBook(c);
+		assertFalse("patron has no hold", d.getRecord(LocalDateTime.now()).equals(""));
+	}
+	
+	@org.junit.Test
+	public void book_checked_out_to_patron()
+	{
+		Patron d = new Patron("name");
+		Copy c = new Copy("a", "b", "c");
+		c.Checkout(LocalDateTime.now());
+		d.CheckoutBook(c);
+		Copy c2 = d.getCheckedOutBook(c.getISBN());
+		assertTrue("book checked out to patron", c.equals(c2));
+	}
+	
+	@org.junit.Test
+	public void book_checked_out_to_patron_bad_isbn()
+	{
+		Patron d = new Patron("name");
+		Copy c = new Copy("a", "b", "c");
+		c.Checkout(LocalDateTime.now());
+		d.CheckoutBook(c);
+		Copy c2 = d.getCheckedOutBook("1234");
+		assertEquals("bad book is null", c2, null);
+	}
+	
+	@org.junit.Test
+	public void book_checked_out_by_index()
+	{
+		Patron d = new Patron("name");
+		Copy c = new Copy("a", "b", "c");
+		c.Checkout(LocalDateTime.now());
+		d.CheckoutBook(c);
+		Copy c2 = d.getCheckedOutBook(0);
+		assertTrue("bad book is null", c.equals(c2));
+	}
+	
+	@org.junit.Test
+	public void overdue_and_notoverdue_records_not_same()
+	{
+		LocalDateTime now = LocalDateTime.now();
+		String recordOverdue = "";
+		String recordNotOverdue = "";
+		Patron d = new Patron("name");
+		Copy c = new Copy("a", "b", "c");
+		c.Checkout(now);
+		d.CheckoutBook(c);
+		recordNotOverdue = d.getRecord(now);
+		d.CheckinBook(c);
+		c.Checkin();
+		c.Checkout(now.minusHours(500));
+		d.CheckoutBook(c);
+		recordOverdue = d.getRecord(now);
+		assertFalse("overude and not over due records not same", recordOverdue.equals(recordNotOverdue));
+	}
 }

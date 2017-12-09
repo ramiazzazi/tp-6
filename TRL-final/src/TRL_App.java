@@ -24,11 +24,8 @@ public class TRL_App
 		logger.newLog();
 		
 		//mimics "scanning" Patron ID card
-		System.out.print("Enter Patron ID: ");	
-		scanner.nextLine();
-		
-		// normally we would read the entered value, but for this use case assume any entered value is good
-		currentPatron = library.GetPatron("1");
+		System.out.print("Enter Patron ID (1 for Dave, 2 for Sarah, 3 for Gary): ");	
+		currentPatron = library.GetPatron(scanner.nextLine());
 		logger.logEvent("Patron ID entered.");
 		
 		if(currentPatron.equals(null))
@@ -55,6 +52,20 @@ public class TRL_App
 			checkoutSession(sessionTime, currentPatron);
 		else
 			extendCheckoutSession(sessionTime, currentPatron);
+		
+		boolean printClause = false;
+		for(int i = 0; i < currentPatron.getCheckedOutCount(); i++)
+		{
+			printClause = true;
+			System.out.println(currentPatron.getCheckedOutBook(i).getTitle() + ". Due: " + currentPatron.getCheckedOutBook(i).getDueDate());
+		}
+		if(printClause)
+			System.out.println("Failure to return clause: We WILL hunt you down.");
+		
+		System.out.println("\nType y to print event log, anything else to quit.");
+		
+		if(scanner.nextLine().equals("y"))
+			logger.printLog();
 	}
 	
 	public static void checkoutSession(LocalDateTime sessionTime, Patron currentPatron)
@@ -62,7 +73,6 @@ public class TRL_App
 		Copy book;
 		String upc = "";
 		int bookCount = 0;
-		ArrayList<Copy> checkoutList = new ArrayList<Copy>();
 		
 		if(currentPatron.hasHolds(sessionTime))
 		{
@@ -116,7 +126,6 @@ public class TRL_App
 				}
 				else
 				{
-					checkoutList.add(book);
 					System.out.println(book.getInfo() + "\n");
 					library.CheckoutBook(book, sessionTime, currentPatron);
 					logger.logEvent(book.getTitle() + " checked out to: " + currentPatron.getName());
@@ -126,25 +135,84 @@ public class TRL_App
 		
 		System.out.println("\nCheckout complete. Books checked out:");
 		logger.logEvent("Checkout Complete.");
-		for(int i = 0; i < checkoutList.size(); i++)
-		{
-			book = checkoutList.get(i);
-			System.out.println(book.getTitle() + ". Due: " + book.getDueDate());
-		}
-		System.out.println("Failure to return clause: We WILL hunt you down.");
-		System.out.println("\nType y to print event log, anything else to quit.");
-		
-		if(scanner.nextLine().equals("y"))
-			logger.printLog();
 	}
 	
 	public static void checkinSession(LocalDateTime sessionTime, Patron currentPatron)
 	{
+		String response = "";
+		int checkinNumber = 0;
+		Copy book;
 		
+		if(currentPatron.getCheckedOutCount() < 1)
+		{
+			System.out.print("You do not have any books checked out.");
+			logger.logEvent("Patron has no books to check in.");
+			return;
+		}
+		
+		System.out.println("How many books would you like to check in?");
+		while (checkinNumber < 1)
+		{
+			response = scanner.nextLine();
+			try
+			{
+				checkinNumber = Integer.parseInt(response);
+			}
+			catch(NumberFormatException e)
+			{
+				checkinNumber = 0;
+				System.out.println("Invalid number entered. Try again.");
+			}
+			
+			if(checkinNumber < 1)
+				System.out.println("Invalid number entered. Try again.");
+		}
+		
+		if(checkinNumber > currentPatron.getCheckedOutCount())
+			checkinNumber = currentPatron.getCheckedOutCount();
+		
+		for(int i = 0; i < checkinNumber; i++)
+		{
+			book = currentPatron.getCheckedOutBook(i);
+			library.CheckinBook(book, currentPatron);
+			logger.logEvent(book.getTitle() + " checked in from: " + currentPatron.getName());
+		}
+		
+		System.out.println("\nCheckin complete. Books still checked out:");
+		logger.logEvent("Checkin Complete.");
 	}
 	
 	public static void extendCheckoutSession(LocalDateTime sessionTime, Patron currentPatron)
 	{
+		String response;
+		Copy book;
 		
+		if(currentPatron.getCheckedOutCount() < 1)
+		{
+			System.out.print("You do not have any books checked out to extend.");
+			logger.logEvent("Patron has no books to to extend checkout.");
+			return;
+		}
+		
+		System.out.println("Would you like to extend checkout on all books or just overdue ones? (a for all, o for overdue)");
+		response = scanner.nextLine();
+		while((!response.equals("a")) && (!response.equals("o")))
+		{
+			System.out.println("Invalid option. Try again.");
+			response = scanner.nextLine();
+		}
+		
+		for(int i = 0; i < currentPatron.getCheckedOutCount(); i++)
+		{
+			book = currentPatron.getCheckedOutBook(i);
+			if(book.isOverdue(sessionTime) || response.equals("a"))
+			{
+				library.ExtendCheckout(book, sessionTime);
+				logger.logEvent(book.getTitle() + " due date extended to: " + sessionTime);
+			}
+		}
+		
+		System.out.println("\nCheckout extension complete. Books still checked out:");
+		logger.logEvent("Checkout Extension Complete.");
 	}
 }

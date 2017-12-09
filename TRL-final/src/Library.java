@@ -10,8 +10,6 @@ public class Library
 	private int nextAvailableID = 1;
 	private int ISBNLength = 13;
 	private Random rand;
-	static Patron patronWithHolds;
-	static Patron patronWithoutHolds;
 	ArrayList<String> isbnList = new ArrayList<String>();
 	
 	
@@ -63,11 +61,6 @@ public class Library
 		return isbn;
 	}
 	
-	public void AddCopy(Copy copy)
-	{
-		copiesList.add(copy);
-	}
-	
 	public Boolean IsBookAvailable(Copy copy)
 	{
 		return copy.isAvailable();
@@ -84,6 +77,14 @@ public class Library
 		}
 		
 		return copy;
+	}
+	
+	public Copy getCopy(int index)
+	{
+		if(index < copiesList.size())
+			return copiesList.get(index);
+		else
+			return null;
 	}
 	
 	public void CheckoutBook(Copy book, LocalDateTime time, Patron patron)
@@ -141,6 +142,12 @@ public class Library
 		return returnPatron;
 	}
 	
+	public void ExtendCheckout(Copy book, LocalDateTime time)
+	{
+		book.Checkin();
+		book.Checkout(time);
+	}
+	
 	public void InitializeLibrary()
 	{
 		AddBookToLibrary("This book is boring", "Some guy");
@@ -161,15 +168,22 @@ public class Library
 		
 		copy = CreateCopy(title, author);
 		isbnList.add(copy.getISBN());
-		AddCopy(copy);
 	}
 	
 	public void InitializePatrons()
 	{	
-		patronWithHolds = new Patron("Dave");
-		patronWithoutHolds = new Patron("Sarah");
+		LocalDateTime notOverdue = LocalDateTime.now().minusHours(48);
+		LocalDateTime overdue = LocalDateTime.now().minusHours(500);
+		Patron patron = new Patron("Dave");		
+		this.AddPatron(patron);
 		
-		this.AddPatron(patronWithHolds);
-		this.AddPatron(patronWithoutHolds);
+		patron = new Patron("Sarah");
+		CheckoutBook(getCopy(7), notOverdue, patron);
+		this.AddPatron(patron);
+		
+		patron = new Patron("Gary");
+		CheckoutBook(getCopy(8), notOverdue, patron);
+		CheckoutBook(getCopy(9), overdue, patron);
+		this.AddPatron(patron);
 	}
 }

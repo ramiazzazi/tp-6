@@ -28,7 +28,15 @@ public class CopyTest {
 	{
 		Copy c = new Copy("name", "author", "isbn");
 		c.Checkout(LocalDateTime.now());
-		assertTrue("copy is checked out", c.isAvailable() == false);
+		assertTrue("copy is checked out", c.isAvailable().equals(false));
+	}
+	
+	@Test
+	public void copy_checked_out_has_due_date()
+	{
+		Copy c = new Copy("name", "author", "isbn");
+		c.Checkout(LocalDateTime.now());
+		assertFalse("copy is checked out", c.getDueDate().equals(""));
 	}
 	
 	@Test
@@ -59,5 +67,29 @@ public class CopyTest {
 		Copy c = new Copy("name", "author", "isbn");
 		assertTrue("isbn is correct", c.getISBN().equals("isbn"));
 	}
+	
+	@Test
+	public void info_not_null()
+	{
+		Copy c = new Copy("name", "author", "isbn");
+		assertFalse("info not null", c.getInfo().equals(""));
+	}
+	
+	@Test
+	public void copy_checked_in()
+	{
+		Copy c = new Copy("name", "author", "isbn");
+		c.Checkout(LocalDateTime.now());
+		c.Checkin();
+		assertTrue("checked in copy is available", c.isAvailable() == true);
+	}
 
+	@Test
+	public void copy_checked_in_no_due_date()
+	{
+		Copy c = new Copy("name", "author", "isbn");
+		c.Checkout(LocalDateTime.now());
+		c.Checkin();
+		assertTrue("checked in copy has no due date", c.getDueDate().equals(""));
+	}
 }
