@@ -5,21 +5,14 @@ import java.util.ArrayList;
 public class TRL_App 
 {
 	static Scanner scanner = new Scanner(System.in);
-	static Patron patronWithHolds;
-	static Patron patronWithoutHolds;
 	static Library library;
-	static ArrayList<String> isbnList = new ArrayList<String>();
+	;
 	
 	public static void main(String[] args) 
 	{
 		// TODO Auto-generated method stub
 		library =  new Library();
-		
-		InitializeLibrary();
-		InitializePatrons();
-		
-		newSession(patronWithoutHolds, LocalDateTime.now());
-		//newSession(patronWithHolds, LocalDateTime.now());
+		newSession(library.patronWithoutHolds, LocalDateTime.now());
 	}
 
 	public static void newSession(Patron patron, LocalDateTime time)
@@ -71,7 +64,7 @@ public class TRL_App
 				continue;
 			
 			//  but i can't expect the user right now to know the 13 digit isbn so just get it
-			if(bookCount == isbnList.size())
+			if(bookCount == library.isbnList.size())
 			{
 				System.out.println("That is literally all the books in the library. Proceeding to checkout.");
 				logger.logEvent("Library out of books.");
@@ -79,7 +72,7 @@ public class TRL_App
 			}
 			else
 			{
-				upc = isbnList.get(bookCount);		
+				upc = library.isbnList.get(bookCount);		
 				bookCount++;
 				
 				book = library.getCopy(upc);
@@ -127,30 +120,5 @@ public class TRL_App
 			logger.printLog();
 	}
 	
-	public static void InitializeLibrary()
-	{
-		AddBookToLibrary("This book is boring", "Some guy");
-		AddBookToLibrary("Don't read this", "Who cares");
-		AddBookToLibrary("Who even reads books anymore", "Bitter programmer");
-		AddBookToLibrary("Books are outdated", "Dr. McTechie");
-		AddBookToLibrary("All knowledge in the world", "God?");
-	}
 	
-	public static void AddBookToLibrary(String title, String author)
-	{
-		Copy copy;
-		
-		copy = library.CreateCopy(title, author);
-		isbnList.add(copy.getISBN());
-		library.AddCopy(copy);
-	}
-	
-	public static void InitializePatrons()
-	{	
-		patronWithHolds = new Patron("Dave");
-		patronWithoutHolds = new Patron("Sarah");
-		
-		library.AddPatron(patronWithHolds);
-		library.AddPatron(patronWithoutHolds);
-	}
 }

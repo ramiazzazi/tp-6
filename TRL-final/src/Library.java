@@ -10,12 +10,19 @@ public class Library
 	private int nextAvailableID = 1;
 	private int ISBNLength = 13;
 	private Random rand;
+	static Patron patronWithHolds;
+	static Patron patronWithoutHolds;
+	static Library library;
+	static ArrayList<String> isbnList = new ArrayList<String>();
+	
 	
 	public Library()
 	{
 		copiesList = new ArrayList<Copy>();
 		rand = new Random();
 		patronList = new ArrayList<Patron>();
+		InitializeLibrary();
+		InitializePatrons();
 	}
 	
 	public Copy CreateCopy(String title, String author)
@@ -31,7 +38,8 @@ public class Library
 		
 		return newCopy;
 	}
-
+	
+//Refactor #2: Extracted a method, which ensures ISBN is not a duplicate
 	private String createUniqueISBN(String isbn) {
 		Boolean validISBN = false;
 		
@@ -44,7 +52,7 @@ public class Library
 		return isbn;
 	}
 	
-//refactor #1
+//refactor #1: Extracted a method, which generates a string of ISBNLength, currently set at 13 characters
 	private String createNewISBN(String isbn) {
 		int num;
 		for(int i = 0; i < ISBNLength; i++)
@@ -113,5 +121,32 @@ public class Library
 		}
 		
 		return returnPatron;
+	}
+	
+	public void InitializeLibrary()
+	{
+		AddBookToLibrary("This book is boring", "Some guy");
+		AddBookToLibrary("Don't read this", "Who cares");
+		AddBookToLibrary("Who even reads books anymore", "Bitter programmer");
+		AddBookToLibrary("Books are outdated", "Dr. McTechie");
+		AddBookToLibrary("All knowledge in the world", "God?");
+	}
+	
+	public void AddBookToLibrary(String title, String author)
+	{
+		Copy copy;
+		
+		copy = CreateCopy(title, author);
+		isbnList.add(copy.getISBN());
+		AddCopy(copy);
+	}
+	
+	public void InitializePatrons()
+	{	
+		patronWithHolds = new Patron("Dave");
+		patronWithoutHolds = new Patron("Sarah");
+		
+		this.AddPatron(patronWithHolds);
+		this.AddPatron(patronWithoutHolds);
 	}
 }
