@@ -23,6 +23,16 @@ public class Library
 		Copy newCopy;
 		String isbn = "";
 		int num;
+		isbn = createUniqueISBN(isbn);
+		
+		newCopy = new Copy(title, author, isbn);
+		
+		copiesList.add(newCopy);
+		
+		return newCopy;
+	}
+
+	private String createUniqueISBN(String isbn) {
 		Boolean validISBN = false;
 		
 		while(!validISBN)	
@@ -31,13 +41,9 @@ public class Library
 			
 			validISBN = IsValidISBN(isbn);
 		}
-		
-		newCopy = new Copy(title, author, isbn);
-		
-		copiesList.add(newCopy);
-		
-		return newCopy;
+		return isbn;
 	}
+	
 //refactor #1
 	private String createNewISBN(String isbn) {
 		int num;
