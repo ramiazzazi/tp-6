@@ -6,23 +6,22 @@ public class TRL_App
 {
 	static Scanner scanner = new Scanner(System.in);
 	static Library library;
+	static Event logger;
 	
 	public static void main(String[] args) 
 	{
 		// TODO Auto-generated method stub
+		logger = new Event();
 		library =  new Library();
-		newSession(Library.patronWithoutHolds, LocalDateTime.now());
+		newSession(LocalDateTime.now());
 	}
 
-	public static void newSession(Patron patron, LocalDateTime time)
+	public static void newSession(LocalDateTime sessionTime)
 	{
-		Event logger = new Event();
-		LocalDateTime sessionTime = LocalDateTime.now();
 		Patron currentPatron;
-		String upc = "";
-		int bookCount = 0;
-		ArrayList<Copy> checkoutList = new ArrayList<Copy>();
-		Copy book;
+		String response = "";
+		
+		logger.newLog();
 		
 		//mimics "scanning" Patron ID card
 		System.out.print("Enter Patron ID: ");	
@@ -41,6 +40,29 @@ public class TRL_App
 		
 		System.out.println(currentPatron.getRecord(sessionTime));
 		logger.logEvent("Patron Record Printed.");
+		
+		System.out.println("What would you like to do? (i for book checkin, o for book checkout, e for extend checkout)");
+		response = scanner.nextLine();
+		while((!response.equals("i")) && (!response.equals("o")) && (!response.equals("e")))
+		{
+			System.out.println("Invalid option. Try again.");
+			response = scanner.nextLine();
+		}
+		
+		if(response.equals("i"))
+			checkinSession(sessionTime, currentPatron);
+		else if(response.equals("o"))
+			checkoutSession(sessionTime, currentPatron);
+		else
+			extendCheckoutSession(sessionTime, currentPatron);
+	}
+	
+	public static void checkoutSession(LocalDateTime sessionTime, Patron currentPatron)
+	{
+		Copy book;
+		String upc = "";
+		int bookCount = 0;
+		ArrayList<Copy> checkoutList = new ArrayList<Copy>();
 		
 		if(currentPatron.hasHolds(sessionTime))
 		{
@@ -80,7 +102,7 @@ public class TRL_App
 					logger.logEvent(book.getTitle() + " is already checked out.");
 					if(scanner.nextLine().equals("y"))
 					{
-						book.Checkin();
+						library.ManualCheckinBook(book);
 						logger.logEvent(book.getTitle() + " manual checkin.");
 					}
 					else
@@ -96,9 +118,8 @@ public class TRL_App
 				{
 					checkoutList.add(book);
 					System.out.println(book.getInfo() + "\n");
-					library.CheckoutBook(book, sessionTime);
-					patron.CheckoutBook(book);
-					logger.logEvent(book.getTitle() + " checked out to: " + patron.getName());
+					library.CheckoutBook(book, sessionTime, currentPatron);
+					logger.logEvent(book.getTitle() + " checked out to: " + currentPatron.getName());
 				}	
 			}
 		}
@@ -115,5 +136,15 @@ public class TRL_App
 		
 		if(scanner.nextLine().equals("y"))
 			logger.printLog();
+	}
+	
+	public static void checkinSession(LocalDateTime sessionTime, Patron currentPatron)
+	{
+		
+	}
+	
+	public static void extendCheckoutSession(LocalDateTime sessionTime, Patron currentPatron)
+	{
+		
 	}
 }

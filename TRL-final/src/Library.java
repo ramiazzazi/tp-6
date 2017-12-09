@@ -86,9 +86,27 @@ public class Library
 		return copy;
 	}
 	
-	public void CheckoutBook(Copy book, LocalDateTime time)
+	public void CheckoutBook(Copy book, LocalDateTime time, Patron patron)
 	{		
 		book.Checkout(time);
+		patron.CheckoutBook(book);
+	}
+	
+	public void CheckinBook(Copy book, Patron patron)
+	{
+		book.Checkin();
+		patron.CheckinBook(book);
+	}
+	
+	public void ManualCheckinBook(Copy book)
+	{
+		book.Checkin();
+		// need to find out which patron, if any, has it checked it and remove it from their list
+		for(int i = 0; i < patronList.size(); i++)
+		{
+			if(patronList.get(i).isBookCheckedOut(book))
+				patronList.get(i).CheckinBook(book);
+		}
 	}
 	
 	public Boolean IsValidISBN(String isbn)

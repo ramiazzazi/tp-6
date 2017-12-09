@@ -76,4 +76,15 @@ public class Patron
 	{
 		return copiesOut.size();
 	}
+	
+	public boolean isBookCheckedOut(Copy book)
+	{
+		for(int i = 0; i < copiesOut.size(); i++)
+		{
+			if(copiesOut.get(i).equals(book))
+				return true;
+		}
+		
+		return false;
+	}
 }
