@@ -50,8 +50,9 @@ public class LibraryTest {
 	{
 		Library lib = new Library();
 		Copy c = lib.CreateCopy("a", "b");
+		Patron p = new Patron("d");
 		lib.AddCopy(c);
-		lib.CheckoutBook(c, LocalDateTime.now());
+		lib.CheckoutBook(c, LocalDateTime.now(), p);
 		assertTrue("copy is available", lib.IsBookAvailable(c) == false);
 	}
 	
