@@ -115,7 +115,7 @@ public class LibraryTest {
 	public void invalid_book_is_null()
 	{
 		Library lib = new Library();
-		assertEquals("checked in book not on patron list", lib.getCopy(10000), null);
+		assertEquals("checked in book not on patron list", lib.getCopy(10000), null); 
 	}
 	
 	@Test

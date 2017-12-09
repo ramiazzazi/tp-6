@@ -110,7 +110,7 @@ public class PatronTest {
 		c.Checkout(LocalDateTime.now());
 		d.CheckoutBook(c);
 		Copy c2 = d.getCheckedOutBook("1234");
-		assertEquals("bad book is null", c2, null); 
+		assertEquals("bad book is null", c2, null);
 	}
 	
 	@org.junit.Test

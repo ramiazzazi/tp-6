@@ -23,7 +23,7 @@ public class EventTest {
 		Event e = new Event();
 		e.newLog();
 		Integer size = e.getLogSize();
-		assertTrue("new log is empty", size.equals(0)); 
+		assertTrue("new log is empty", size.equals(0));
 	}
 
 	@Test

@@ -1,6 +1,5 @@
 import java.time.LocalDateTime;
 import java.util.Scanner;
-import java.util.ArrayList;
 
 public class TRL_App 
 {
