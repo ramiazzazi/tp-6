@@ -22,56 +22,59 @@ public class TRL_App
 		
 		logger.newLog();
 		
-		//mimics "scanning" Patron ID card
-		System.out.print("Enter Patron ID (1 for Dave, 2 for Sarah, 3 for Gary): ");	
-		currentPatron = library.GetPatron(scanner.nextLine());
-		logger.logEvent("Patron ID entered.");
-		
-		if(currentPatron.equals(null))
+		while(response.equals("q") == false)
 		{
-			System.out.print("Invalid ID. Please sign up for a new ID card.");
-			logger.logEvent("Invalid ID.");
-			return;
-		}
+			//mimics "scanning" Patron ID card
+			System.out.print("Enter Patron ID (1 for Dave, 2 for Sarah, 3 for Gary): ");	
+			currentPatron = library.GetPatron(scanner.nextLine());
+			logger.logEvent("Patron ID entered.");
+			
+			if(currentPatron.equals(null))
+			{
+				System.out.print("Invalid ID. Please sign up for a new ID card.");
+				logger.logEvent("Invalid ID.");
+				return;
+			}
+			
+			System.out.println(currentPatron.getRecord(sessionTime));
+			logger.logEvent("Patron Record Printed.");
 		
-		System.out.println(currentPatron.getRecord(sessionTime));
-		logger.logEvent("Patron Record Printed.");
-		
-		System.out.println("What would you like to do? (i for book checkin, o for book checkout, e for extend checkout)");
-		response = scanner.nextLine();
-		while((!response.equals("i")) && (!response.equals("o")) && (!response.equals("e")))
-		{
-			System.out.println("Invalid option. Try again.");
+			System.out.println("What would you like to do? (i for book checkin, o for book checkout, e for extend checkout)");
 			response = scanner.nextLine();
+			while((!response.equals("i")) && (!response.equals("o")) && (!response.equals("e")))
+			{
+				System.out.println("Invalid option. Try again.");
+				response = scanner.nextLine();
+			}
+			
+			if(response.equals("i"))
+				checkinSession(sessionTime, currentPatron);
+			else if(response.equals("o"))
+				checkoutSession(sessionTime, currentPatron);
+			else
+				extendCheckoutSession(sessionTime, currentPatron);
+			
+			boolean printClause = false;
+			for(int i = 0; i < currentPatron.getCheckedOutCount(); i++)
+			{
+				printClause = true;
+				System.out.println(currentPatron.getCheckedOutBook(i).getTitle() + ". Due: " + currentPatron.getCheckedOutBook(i).getDueDate());
+			}
+			if(printClause)
+				System.out.println("Failure to return clause: We WILL hunt you down.");
+			
+			System.out.println("\nType q to print event log and quit, anything else to complete another trasaction.");
+			response = scanner.nextLine();
+			if(response.equals("q"))
+				logger.printLog();
 		}
-		
-		if(response.equals("i"))
-			checkinSession(sessionTime, currentPatron);
-		else if(response.equals("o"))
-			checkoutSession(sessionTime, currentPatron);
-		else
-			extendCheckoutSession(sessionTime, currentPatron);
-		
-		boolean printClause = false;
-		for(int i = 0; i < currentPatron.getCheckedOutCount(); i++)
-		{
-			printClause = true;
-			System.out.println(currentPatron.getCheckedOutBook(i).getTitle() + ". Due: " + currentPatron.getCheckedOutBook(i).getDueDate());
-		}
-		if(printClause)
-			System.out.println("Failure to return clause: We WILL hunt you down.");
-		
-		System.out.println("\nType y to print event log, anything else to quit.");
-		
-		if(scanner.nextLine().equals("y"))
-			logger.printLog();
 	}
 	
 	public static void checkoutSession(LocalDateTime sessionTime, Patron currentPatron)
 	{
 		Copy book;
 		String upc = "";
-		int bookCount = 0;
+		int bookNumber = -1;
 		
 		if(currentPatron.hasHolds(sessionTime))
 		{
@@ -83,7 +86,7 @@ public class TRL_App
 		while(!(upc.equals("n")))
 		{
 			//mimics "scanning" book, 'n' mimics pressing the checkout button
-			System.out.print("Enter Book UPC ('n' to complete checkout): ");
+			System.out.print("Enter Book Number 0-9 ('n' to complete checkout): ");
 			
 			// normally this would be the 'scan' result
 			upc = scanner.nextLine();
@@ -91,45 +94,50 @@ public class TRL_App
 			if(upc.equals("n"))
 				continue;
 			
-			//  but i can't expect the user right now to know the 13 digit isbn so just get it
-			if(bookCount == library.isbnList.size())
+			while (bookNumber < 0 || bookNumber > 9)
 			{
-				System.out.println("That is literally all the books in the library. Proceeding to checkout.");
-				logger.logEvent("Library out of books.");
-				upc = "n";
+				try
+				{
+					bookNumber = Integer.parseInt(upc);
+				}
+				catch(NumberFormatException e)
+				{
+					bookNumber = -1;
+					System.out.println("Invalid book number entered. Try again.");
+				}
+				
+				if(bookNumber < 0 || bookNumber > 9)
+					System.out.println("Invalid book number entered. Try again.");
+			}
+			
+			upc = library.isbnList.get(bookNumber);					
+			book = library.getCopy(upc);
+			bookNumber = -1;
+			
+			if(!book.isAvailable())
+			{
+				System.out.print("Book is checked out. Type 'y' to manually check it in: ");
+				logger.logEvent(book.getTitle() + " is already checked out.");
+				if(scanner.nextLine().equals("y"))
+				{
+					library.ManualCheckinBook(book);
+					logger.logEvent(book.getTitle() + " manual checkin.");
+				}
+				else
+					continue;
+			}
+			
+			if(book.equals(null))
+			{
+				System.out.println("Book does not exist in database.");
+				logger.logEvent(book.getTitle() + " doesn't exist in the database.");
 			}
 			else
 			{
-				upc = library.isbnList.get(bookCount);		
-				bookCount++;
-				
-				book = library.getCopy(upc);
-				
-				if(!book.isAvailable())
-				{
-					System.out.print("Book is checked out. Type 'y' to manually check it in: ");
-					logger.logEvent(book.getTitle() + " is already checked out.");
-					if(scanner.nextLine().equals("y"))
-					{
-						library.ManualCheckinBook(book);
-						logger.logEvent(book.getTitle() + " manual checkin.");
-					}
-					else
-						continue;
-				}
-				
-				if(book.equals(null))
-				{
-					System.out.println("Book does not exist in database.");
-					logger.logEvent(book.getTitle() + " doesn't exist in the database.");
-				}
-				else
-				{
-					System.out.println(book.getInfo() + "\n");
-					library.CheckoutBook(book, sessionTime, currentPatron);
-					logger.logEvent(book.getTitle() + " checked out to: " + currentPatron.getName());
-				}	
-			}
+				System.out.println(book.getInfo() + "\n");
+				library.CheckoutBook(book, sessionTime, currentPatron);
+				logger.logEvent(book.getTitle() + " checked out to: " + currentPatron.getName());
+			}	
 		}
 		
 		System.out.println("\nCheckout complete. Books checked out:");
