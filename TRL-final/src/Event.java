@@ -18,7 +18,7 @@ public class Event
 	public void newLog(String firstLine)
 	{
 		log.clear();
-		log.add(firstLine + ". " + LocalDateTime.now());
+		log.add(firstLine + ". " + LocalDateTime.now()); 
 	}
 	
 	public void logEvent(String line)

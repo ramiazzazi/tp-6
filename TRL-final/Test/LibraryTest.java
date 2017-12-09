@@ -108,7 +108,7 @@ public class LibraryTest {
 		lib.CheckoutBook(c, LocalDateTime.now(), p);
 		lib.CheckinBook(c, p);
 		Integer count = p.getCheckedOutCount();
-		assertTrue("checked in book not on patron list", count.equals(0));
+		assertTrue("checked in book not on patron list", count.equals(0)); 
 	}
 	
 	@Test

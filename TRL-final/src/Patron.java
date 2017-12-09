@@ -45,7 +45,7 @@ public class Patron
 		String record = "Patron Record. Copies out:\n";
 		Copy copy;
 		
-		for(int i = 0; i < copiesOut.size(); i++)
+		for(int i = 0; i < copiesOut.size(); i++) 
 		{
 			copy = copiesOut.get(i);
 			record += copy.getTitle() + ", ";

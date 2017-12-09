@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class TRL_App 
 {
-	static Scanner scanner = new Scanner(System.in);
+	static Scanner scanner = new Scanner(System.in); 
 	static Library library;
 	static Event logger;
 	

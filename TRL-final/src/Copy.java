@@ -27,7 +27,7 @@ public class Copy
 		if(!checkedOut)
 			return "";
 		
-		return dueDate.toString();
+		return dueDate.toString(); 
 	}
 	
 	public String getTitle()
