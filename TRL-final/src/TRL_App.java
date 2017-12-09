@@ -6,13 +6,12 @@ public class TRL_App
 {
 	static Scanner scanner = new Scanner(System.in);
 	static Library library;
-	;
 	
 	public static void main(String[] args) 
 	{
 		// TODO Auto-generated method stub
 		library =  new Library();
-		newSession(library.patronWithoutHolds, LocalDateTime.now());
+		newSession(Library.patronWithoutHolds, LocalDateTime.now());
 	}
 
 	public static void newSession(Patron patron, LocalDateTime time)
@@ -22,14 +21,12 @@ public class TRL_App
 		Patron currentPatron;
 		String upc = "";
 		int bookCount = 0;
-		String patronID = "";
 		ArrayList<Copy> checkoutList = new ArrayList<Copy>();
 		Copy book;
 		
 		//mimics "scanning" Patron ID card
-		System.out.print("Enter Patron ID: ");
-		
-		patronID = scanner.nextLine();
+		System.out.print("Enter Patron ID: ");	
+		scanner.nextLine();
 		
 		// normally we would read the entered value, but for this use case assume any entered value is good
 		currentPatron = library.GetPatron("1");

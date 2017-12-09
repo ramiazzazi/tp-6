@@ -12,8 +12,7 @@ public class Library
 	private Random rand;
 	static Patron patronWithHolds;
 	static Patron patronWithoutHolds;
-	static Library library;
-	static ArrayList<String> isbnList = new ArrayList<String>();
+	ArrayList<String> isbnList = new ArrayList<String>();
 	
 	
 	public Library()
@@ -29,7 +28,6 @@ public class Library
 	{
 		Copy newCopy;
 		String isbn = "";
-		int num;
 		isbn = createUniqueISBN(isbn);
 		
 		newCopy = new Copy(title, author, isbn);
@@ -40,7 +38,8 @@ public class Library
 	}
 	
 //Refactor #2: Extracted a method, which ensures ISBN is not a duplicate
-	private String createUniqueISBN(String isbn) {
+	private String createUniqueISBN(String isbn) 
+	{
 		Boolean validISBN = false;
 		
 		while(!validISBN)	
@@ -53,7 +52,8 @@ public class Library
 	}
 	
 //refactor #1: Extracted a method, which generates a string of ISBNLength, currently set at 13 characters
-	private String createNewISBN(String isbn) {
+	private String createNewISBN(String isbn) 
+	{
 		int num;
 		for(int i = 0; i < ISBNLength; i++)
 		{
