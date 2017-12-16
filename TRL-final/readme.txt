@@ -1,7 +1,8 @@
-Currently there are two names in the database. I list them below in the format:
+Currently there are three names in the database. I list them below in the format:
 ID, name, Hold-status:
 1, Dave, with hold
 2, Sarah, without hold
+3, Gary, already has an overdui book.
 
 
 The system currently has these book names hardcoded as part of the instantiation process
@@ -20,9 +21,13 @@ The system currently has these book names hardcoded as part of the instantiation
 Worthy of noting is that the ISBN are generated randomly as the controller instantiates, meaning, you will get different ISBNs for the same book each time you run the application. This should not affect the process as we look up the copy by the UPC code (1, 2, 3...etc)
 
 Features:
+1-Extension handling:
+	1a-invalid patron ID
+	1b-Manual check in of books (if a customer physically brings a book to the counter, if the library thinks it's checked out, it can be manually checked in)
+2-Randomized ISBN numbers
+3-Extend Checkout session, user can extend their checked out books
+4-Event logging
 
-Changes from previous versions and refactoring(s):
 
-=======
-//111111111111121
->>>>>>> branch 'master' of https://github.com/ramiazzazi/tp-6.git
+
+
