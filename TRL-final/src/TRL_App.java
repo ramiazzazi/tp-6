@@ -1,9 +1,9 @@
 import java.time.LocalDateTime;
 import java.util.Scanner;
 
-public class TRL_App 
+public class TRL_App
 {
-	static Scanner scanner = new Scanner(System.in); 
+	static Scanner scanner = new Scanner(System.in);
 	static Library library;
 	static Event logger;
 	
@@ -29,7 +29,7 @@ public class TRL_App
 			currentPatron = library.GetPatron(scanner.nextLine());
 			logger.logEvent("Patron ID entered.");
 			
-			if(currentPatron.equals(null))
+			if(currentPatron == null)
 			{
 				System.out.print("Invalid ID. Please sign up for a new ID card.");
 				logger.logEvent("Invalid ID.");

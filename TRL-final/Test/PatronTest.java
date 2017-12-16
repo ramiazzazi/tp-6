@@ -1,7 +1,6 @@
 import static org.junit.Assert.*;
 
 import org.junit.Before;
-import java.time.LocalTime;
 import java.time.LocalDateTime;
 
 public class PatronTest {
