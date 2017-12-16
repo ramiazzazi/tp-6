@@ -22,7 +22,7 @@ public class TRL_App
 		
 		logger.newLog();
 		
-		while(response.equals("q") == false)
+		while(response.equals("q") == false) 
 		{
 			//mimics "scanning" Patron ID card
 			System.out.print("Enter Patron ID (1 for Dave, 2 for Sarah, 3 for Gary): ");	
